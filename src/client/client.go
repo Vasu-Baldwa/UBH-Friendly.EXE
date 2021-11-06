@@ -50,6 +50,6 @@ func main() {
 		fmt.Println("Client connected.")
 
 		fmt.Println("Client " + client.RemoteAddr().String() + " connected.")
-
+		go handleConnection(client)
 	}
 }
