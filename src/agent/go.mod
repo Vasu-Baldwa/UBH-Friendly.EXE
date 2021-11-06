@@ -1,3 +1,3 @@
-module client.go
+module agent.go
 
 go 1.17
