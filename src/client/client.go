@@ -5,34 +5,49 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"strings"
+	"os/exec"
 )
 
-func main() {
-	arguments := os.Args
-	if len(arguments) == 1 {
-		fmt.Println("Please provide host:port.")
+//test
+
+const (
+	connHost = "localhost"
+	connPort = "7025"
+	connType = "tcp"
+)
+
+func handleConnection(conn net.Conn) {
+	buffer, err := bufio.NewReader(conn).ReadBytes("\n")
+
+	if err != nil {
+		fmt.Println("Client left.")
+		conn.Close()
 		return
+	}
+	exec.Command(string(buffer[:len(buffer)-1]))
+
+}
+
+func main() {
+	fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
+	server, err := net.Listen(connType, connHost+":"+connPort)
+
+	if err != nil {
+		fmt.Println("Error listening:", err.Error())
+		os.Exit(1)
 	}
 
-	CONNECT := arguments[1]
-	c, err := net.Dial("tcp", CONNECT)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	defer server.Close()
 
 	for {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(">> ")
-		text, _ := reader.ReadString('\n')
-		fmt.Fprintf(c, text+"\n")
-
-		message, _ := bufio.NewReader(c).ReadString('\n')
-		fmt.Print("->: " + message)
-		if strings.TrimSpace(string(text)) == "STOP" {
-			fmt.Println("TCP client exiting...")
+		client, err := server.Accept()
+		if err != nil {
+			fmt.Println("Error connecting:", err.Error())
 			return
 		}
+		fmt.Println("Client connected.")
+
+		fmt.Println("Client " + client.RemoteAddr().String() + " connected.")
+
 	}
 }
