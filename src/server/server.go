@@ -1,33 +1,16 @@
 package main
 
 import (
-    "bufio"
-    "fmt"
-    "log"
-    "net"
-    "os"
+	"fmt"
+	"net"
+	"os"
 )
+
 const (
 	connHost = "localhost"
 	connPort = "7025"
 	connType = "tcp"
 )
-
-func WhenConnectedClient(conn net.Conn) {
-    buffer, err := bufio.NewReader(conn).ReadBytes('\n')
-
-    if err != nil {
-        fmt.Println("Client left.")
-        conn.Close()
-        return
-    }
-
-    log.Println("Client message:", string(buffer[:len(buffer)-1]))
-
-    conn.Write(buffer)
-
-    WhenConnectedClient(conn)
-}
 
 func main() {
 	fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
@@ -50,6 +33,5 @@ func main() {
 
 		fmt.Println("Client " + client.RemoteAddr().String() + " connected.")
 
-		go WhenConnectedClient(client)
 	}
 }
