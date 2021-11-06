@@ -1,4 +1,5 @@
 #I am Vasu, I think I am cool coz I use weird language to code weird stuff (and my pp is small)
+#I'm Malav and I can't get python to work lmao xD
 import socket, select, sys
 
 #Function to send message to all connected clients
