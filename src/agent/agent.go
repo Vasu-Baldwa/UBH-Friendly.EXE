@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 //test
@@ -27,14 +28,15 @@ func handleConnection(conn net.Conn) {
 	//newCmd := strings.TrimSuffix(buffer, "\n")
 	//todo: seperate command and args
 	//print(newCmd)
+	buffer = strings.Replace(buffer, "\n", "", -1)
 	command, err := exec.Command(buffer).Output()
 
 	if err != nil {
-		fmt.Println("Command failed.")
+		fmt.Println(err)
 		conn.Close()
 		return
 	}
-	print(command)
+	print(string(command))
 }
 
 func main() {
