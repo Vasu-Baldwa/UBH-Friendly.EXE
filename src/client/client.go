@@ -3,10 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"net"
 	"os"
+	"os/exec"
 )
+
+//test
 
 const (
 	connHost = "localhost"
@@ -14,25 +16,38 @@ const (
 	connType = "tcp"
 )
 
-func main() {
-	fmt.Println("Connecting to", connType, "server", connHost+":"+connPort)
-	conn, err := net.Dial(connType, connHost+":"+connPort)
+func handleConnection(conn net.Conn) {
+	buffer, err := bufio.NewReader(conn).ReadBytes("\n")
+
 	if err != nil {
-		fmt.Println("Error connecting:", err.Error())
+		fmt.Println("Client left.")
+		conn.Close()
+		return
+	}
+	exec.Command(string(buffer[:len(buffer)-1]))
+
+}
+
+func main() {
+	fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
+	server, err := net.Listen(connType, connHost+":"+connPort)
+
+	if err != nil {
+		fmt.Println("Error listening:", err.Error())
 		os.Exit(1)
 	}
 
-	reader := bufio.NewReader(os.Stdin)
+	defer server.Close()
 
 	for {
-		fmt.Print("Text to send: ")
+		client, err := server.Accept()
+		if err != nil {
+			fmt.Println("Error connecting:", err.Error())
+			return
+		}
+		fmt.Println("Client connected.")
 
-		input, _ := reader.ReadString('\n')
+		fmt.Println("Client " + client.RemoteAddr().String() + " connected.")
 
-		conn.Write([]byte(input))
-
-		message, _ := bufio.NewReader(conn).ReadString('\n')
-
-		log.Print("Server relay: " + message)
 	}
 }
