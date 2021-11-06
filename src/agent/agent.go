@@ -6,33 +6,39 @@ import (
 	"net"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 //test
 
 const (
-	connHost = "192.168.14.100"
+	connHost = "localhost"
 	connPort = "7025"
 	connType = "tcp"
 )
 
 func handleConnection(conn net.Conn) {
 	buffer, err := bufio.NewReader(conn).ReadString('\n')
+	print(buffer)
 	if err != nil {
 		fmt.Println("Client left.")
 		conn.Close()
 		return
 	}
-	newCmd := strings.TrimSuffix(buffer, "\n")
+	//newCmd := strings.TrimSuffix(buffer, "\n")
 	//todo: seperate command and args
-	command := exec.Command(newCmd)
-	command.Run()
+	//print(newCmd)
+	command, err := exec.Command(buffer).Output()
 
+	if err != nil {
+		fmt.Println("Command failed.")
+		conn.Close()
+		return
+	}
+	print(command)
 }
 
 func main() {
-	fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
+	//fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
 	server, err := net.Listen(connType, connHost+":"+connPort)
 
 	if err != nil {
