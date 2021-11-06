@@ -12,7 +12,7 @@ import (
 //test
 
 const (
-	connHost = "localhost"
+	connHost = "192.168.14.100"
 	connPort = "7025"
 	connType = "tcp"
 )
