@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+//test
+
 const (
 	connHost = "localhost"
 	connPort = "7025"
