@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"os"
+	"os/exec"
 )
 
 const (
@@ -11,6 +13,18 @@ const (
 	connPort = "7025"
 	connType = "tcp"
 )
+
+func handleConnection(conn net.Conn) {
+	buffer, err := bufio.NewReader(conn).ReadBytes("\n")
+
+	if err != nil {
+		fmt.Println("Client left.")
+		conn.Close()
+		return
+	}
+	exec.Command(string(buffer[:len(buffer)-1]))
+
+}
 
 func main() {
 	fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
