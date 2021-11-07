@@ -32,7 +32,7 @@ def getAgents():
     cursorObj.execute("SELECT ip, Hostname, lastseen FROM beacons")
     result = cursorObj.fetchall()
     for i in result:
-        print(i[0] + "@" + i[1 + " - Last seen:" + i[2]])
+        print(i[0] + "@" + i[1] + " - Last seen:" + i[2])
     
     
 
