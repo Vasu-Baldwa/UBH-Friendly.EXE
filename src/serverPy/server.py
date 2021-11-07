@@ -7,16 +7,17 @@ def beaconHandler():
 	PORT = 65321        # Port to listen on (non-privileged ports are > 1023)
 
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-		s.bind((HOST, PORT))
-		s.listen()
-		conn, addr = s.accept()
-		with conn:
-			print('Connected by', addr)
-			while True:
+		while True:
+			s.bind((HOST, PORT))
+			s.listen()
+			conn, addr = s.accept()
+			with conn:
+				print('Connected by', addr)
 				data = conn.recv(1024)
 				if not data:
-					break
+					conn.close()
 				print(data)
+				conn.close()
         
 	
 
