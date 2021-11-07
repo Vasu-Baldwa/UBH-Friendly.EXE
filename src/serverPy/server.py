@@ -46,7 +46,7 @@ def doCommand(command):
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((str(i[0]), PORT))
-            s.sendall(bytes(command, 'utf-8'))
+            s.sendall(bytes(command+'\n', 'utf-8'))
             s.close()
             
         print(i)

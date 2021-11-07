@@ -114,9 +114,8 @@ func writeData(Beacon bool, result string) string {
 func handleConnection(conn net.Conn) {
 	buffer, err := bufio.NewReader(conn).ReadString('\n')
 
-	print(buffer)
 	if err != nil {
-		fmt.Println("Client left.")
+		fmt.Println("Failed to read from reader.")
 		conn.Close()
 		return
 	}
