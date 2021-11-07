@@ -46,7 +46,7 @@ def doCommand(command):
         PORT = 7025        # The port used by the server
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((i[0], PORT))
+            s.connect((str(i[0]), PORT))
             s.sendall(bytearray(command))
             s.close()
             
@@ -158,7 +158,7 @@ def jsonVal(decodedValue):
 
 
 def beaconHandler():
-    HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
+    HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
     PORT = 65321        # Port to listen on (non-privileged ports are > 1023)
     UID = 0
     con = sql_connection()
@@ -168,6 +168,7 @@ def beaconHandler():
         s.bind((HOST, PORT))
         while True:
             s.listen()
+            
             conn, addr = s.accept()
             with conn:
                 

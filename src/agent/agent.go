@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	connHost   = "localhost"
+	connHost   = "0.0.0.0"
 	connPort   = "7025"
 	connType   = "tcp"
 	masterServ = "localhost"
