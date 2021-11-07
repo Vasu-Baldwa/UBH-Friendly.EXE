@@ -198,7 +198,7 @@ def beaconHandler():
 def main():
     x = threading.Thread(target=beaconHandler)
     x.start()
-    #port = 7025
+    port = 7025
     main_menu()
 
 
