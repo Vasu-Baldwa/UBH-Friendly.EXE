@@ -42,6 +42,7 @@ def doCommand(command):
     cursorObj.execute("SELECT ip FROM beacons")
     result = cursorObj.fetchall()
     for i in result:
+        print(i)
         PORT = 7025        # The port used by the server
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
