@@ -48,10 +48,11 @@ def noBeacon(con, mac):
     # return true if no beacon exists
     cursorObj = con.cursor()
     cursorObj.execute("SELECT uid FROM beacons WHERE MAC = \"" + str(mac) + "\"")
-    con.commit()
-    if(cursorObj == None):
-        return True
-    return False
+    result = cursorObj.fetchone()
+    
+    if(result):
+        return False
+    return True
 
 
 def jsonVal(decodedValue):
@@ -79,6 +80,7 @@ def beaconHandler():
                 jsonStr = jsonVal(str(base64.b64decode(data).decode('utf-8')))
                 if(jsonStr["Type"] == True):
                     if(noBeacon(con, jsonStr["Mac"])):
+                        print("no b")
                         entities = (UID, jsonStr["Mac"], jsonStr["Hostname"],
                                     jsonStr["username"], jsonStr["devIp"], jsonStr["time"])
                         sql_insertBeacon(con, entities)
