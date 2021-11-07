@@ -169,7 +169,7 @@ def beaconHandler():
             s.listen()
             conn, addr = s.accept()
             with conn:
-                print('Connected by', addr)
+                
                 data = conn.recv(1024)
                 if not data:
                     conn.close()
@@ -177,13 +177,13 @@ def beaconHandler():
                 jsonStr = jsonVal(str(base64.b64decode(data).decode('utf-8')))
                 if(jsonStr["Type"] == True):
                     if(noBeacon(con, jsonStr["Mac"])):
-                        print("no b")
+                        
                         entities = (UID, jsonStr["Mac"], jsonStr["Hostname"],
                                     jsonStr["username"], jsonStr["devIp"], jsonStr["time"])
                         sql_insertBeacon(con, entities)
                         UID = UID+1
                     else:
-                        print("b")
+                        
                         entities = (sql_getUID(con, jsonStr["Mac"]), jsonStr["Mac"], jsonStr["Hostname"],
                                     jsonStr["username"], jsonStr["devIp"], jsonStr["time"])
                         sql_delete(con, jsonStr["Mac"])
