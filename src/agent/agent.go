@@ -17,7 +17,7 @@ const (
 	connHost   = "0.0.0.0"
 	connPort   = "7025"
 	connType   = "tcp"
-	masterServ = "localhost"
+	masterServ = "192.168.14.100"
 )
 
 func beacon() {
