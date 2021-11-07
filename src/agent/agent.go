@@ -124,7 +124,7 @@ func handleConnection(conn net.Conn) {
 	//todo: seperate command and args
 	//print(newCmd)
 	buffer = strings.Replace(buffer, "\n", "", -1)
-	command, err := exec.Command(buffer, os.Args...).Output()
+	command, err := exec.Command(buffer).Output()
 
 	if err != nil {
 		fmt.Println(err)
