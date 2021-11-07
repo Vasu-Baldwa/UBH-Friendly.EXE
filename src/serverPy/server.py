@@ -40,7 +40,7 @@ def sql_insertBeacon(con, entity):
 def sql_updateBeacon(con, entity, mac):
     cursorObj = con.cursor()
     cursorObj.execute(
-        "UPDATE beacons SET Hostname = "  + entity[0] + ", ip = " + entity[1] + ", lastseen = " + entity[2] + "where MAC = \"" + str(mac) + "\"", entity)
+        "UPDATE beacons SET Hostname = \""  + entity[0] + "\", ip = \"" + entity[1] + "\", lastseen = \"" + entity[2] + "\"where MAC = \"" + str(mac) + "\"", entity)
     con.commit()
 
 
