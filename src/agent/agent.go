@@ -56,6 +56,9 @@ func getMacAddr() []string {
 	return as
 }
 
+var macA = getMacAddr()
+var userN = getUsername()
+
 func getHostname() string {
 	os, err := os.Hostname()
 	if err != nil {
@@ -81,10 +84,10 @@ func writeData() string {
 		Type:     true,
 		DevIP:    getLocalIP().String(),
 		Hostname: getHostname(),
-		Username: getUsername(),
+		Username: userN,
 		Time:     time.Now().UTC().Format("2006-01-02 15:04:05"),
 		Result:   "{FROM FUNC}",
-		Mac:      arrToString(getMacAddr()),
+		Mac:      arrToString(macA),
 	}
 
 	dat, err := json.Marshal(sendData)
