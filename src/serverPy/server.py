@@ -1,7 +1,6 @@
 #I'm Malav and I can't get python to work
-import socket, select, string, sys, os
-import subprocess
-import base64
+import socket, select, string, sys, os , subprocess, base64 ,threading
+
 
 def beaconHandler():
 	HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
@@ -31,7 +30,8 @@ def main():
 	else:
 		host = sys.argv[1]
 #		name = str.encode(sys.argv[2])
-
+	x = threading.Thread(target=beaconHandler)
+	x.start()
 	port = 7025
 	#asks for user name
 	# name=raw_input("\33[34m\33[1m CREATING NEW ID:\n Enter username: \33[0m")
