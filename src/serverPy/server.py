@@ -40,14 +40,14 @@ def sql_insertBeacon(con, entity):
 def sql_updateBeacon(con, entity, mac):
     cursorObj = con.cursor()
     cursorObj.execute(
-        'UPDATE beacons SET (Hostname, ip, lastseen) VALUES (?,?,?) where MAC = ' + str(mac), entity)
+        "UPDATE beacons SET (Hostname, ip, lastseen) VALUES (?,?,?) where MAC = \"" + str(mac) + "\"", entity)
     con.commit()
 
 
 def noBeacon(con, mac):
     # return true if no beacon exists
     cursorObj = con.cursor()
-    cursorObj.execute("SELECT uid FROM beacons WHERE MAC = " + str(mac))
+    cursorObj.execute("SELECT uid FROM beacons WHERE MAC = \"" + str(mac) + "\"")
     con.commit()
     if(cursorObj == None):
         return True
