@@ -30,7 +30,9 @@ func beacon(conn net.Conn) {
 
 //Tank you golang very cool
 func errorHandler(err error) {
-	go errorHandler(err)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 type Packet struct {
