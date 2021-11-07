@@ -55,36 +55,18 @@ def sql_updateBeacon(con, entity, mac):
 def beaconHandler():
 	HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 	PORT = 65321        # Port to listen on (non-privileged ports are > 1023)
-	UID = 0
-	con = sql_connection()
-	sql_init(con)
 
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.bind((HOST, PORT))
 		while True:
 			s.listen()
 			conn, addr = s.accept()
-        	with conn:
-                print('Connected by', addr)
-                data = conn.recv(1024)
-                if not data:
-                    conn.close()
-                #ADD BEACON DB#
-				decodedValue = str(base64.b64decode(data).decode('utf-8'))
-    			jsonStr = json.loads(decodedValue)
-				if(jsonStr["Type"] == True):
-        			if(noBeacon(con, jsonStr["Mac"])):
-            			entities = (UID, jsonStr["Mac"], jsonStr["Hostname"],
-                        jsonStr["username"], jsonStr["devIp"], jsonStr["time"])
-            			sql_insertBeacon(con, entities)
-            			UID = UID+1
-        			else:
-            			entities = (jsonStr["Hostname"], jsonStr["devIp"], jsonStr["time"])
-            			sql_updateBeacon(con, entities, jsonStr["Mac"])
-
-    			else:
-        			print("Error")
-        	conn.close()
+			with conn:
+				print('Connected by', addr)
+				data = conn.recv(1024)
+				if not data:
+					conn.close()
+				print(str(base64.b64decode(data).decode('utf-8')))
 
 
 ###########################################################
