@@ -16,6 +16,7 @@ def beaconHandler():
 				data = conn.recv(1024)
 				if not data:
 					break
+				print(data)
         
 	
 
