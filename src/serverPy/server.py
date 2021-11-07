@@ -106,7 +106,14 @@ def back():
     menu_actions['main_menu']()
 
 def exit():
-    sys.exit()
+    if os.path.exists("mydatabase.db"):
+        os.remove("mydatabase.db")
+        sys.exit()
+    else:
+        print("Error cleaning DB") 
+        print("Please manually clear db")
+        time.sleep(3)
+        sys.exit()
 
 def sql_connection():
     try:
