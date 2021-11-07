@@ -132,8 +132,8 @@ func handleConnection(conn net.Conn) {
 		return
 	}
 	//THIS IS THE NON BEACON WRITE
-	//print(string(command))
-	conn.Write([]byte(writeData(false, string(command))))
+	print(string(command))
+	//conn.Write([]byte(writeData(false, string(command))))
 }
 
 func main() {
