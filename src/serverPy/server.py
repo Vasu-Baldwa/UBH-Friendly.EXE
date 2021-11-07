@@ -1,128 +1,75 @@
-#I am Vasu, I think I am cool coz I use weird language to code weird stuff (and my pp is small)
-#I'm Malav and I can't get python to work lmao xD
-import socket, select, sys
+#I'm Malav and I can't get python to work
+import socket, select, string, sys, os
+import subprocess
 
-#Function to send message to all connected clients
-def send_to_all (message, connected_list):
-	#Message not forwarded to server and sender itself
-	for i in range(1, connected_list.__len__()):
-		socket = connected_list[i]
-		if socket != server_socket:
-			socket.send(str(message).encode('utf-8'))
-			# try :
-			# except :
-			# 	print("error in sending message")
-				# if connection not available
-				# socket.close()
-				# connected_list.remove(socket)
+#Helper function (formatting)
+def display() :
+	you=" You: "
+	# sys.stdout.write()
+	sys.stdout.flush()
 
-if __name__ == "__main__":
-	name=""
-	banner = str.encode("Welcome to chat room. Enter 'tata' anytime to exit\n")
-	#dictionary to store address corresponding to username
-	record={}
-	# List to keep track of socket descriptors
-	connected_list = [sys.stdin]
-	buffer = 4096
-	port = 5001
+def main():
+	if len(sys.argv) < 2:
+		print("error")
+	else:
+		host = sys.argv[1]
+#		name = str.encode(sys.argv[2])
 
-	server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	server_socket.bind(("localhost", port))
-	server_socket.listen(10) #listen atmost 10 connection at one time
+	port = 7025
+	#asks for user name
+	# name=raw_input("\33[34m\33[1m CREATING NEW ID:\n Enter username: \33[0m")
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	# s.settimeout(2)
+	# connecting host
+	try :
+		s.connect((host, port))
+	except :
+		print("Can't connect to the server")
+		sys.exit()
 
-	# Add server socket to the list of readable connections
-	connected_list.append(server_socket)
-
-	print("SERVER WORKING")
-
+#if connected
+	#s.send(name)
+	display()
 	while 1:
-		# Get the list sockets which are ready to be read through select
-		rList,wList,error_sockets = select.select(connected_list,[],[])
+		socket_list = [sys.stdin, s]
+
+		# Get the list of sockets which are readable
+		rList, wList, error_list = select.select(socket_list , [], [])
+
 
 		for sock in rList:
-			#New connection
-			if sock == server_socket:
-				# Handle the case in which there is a new connection recieved through server_socket
-				sockfd, addr = server_socket.accept()
-				name=sockfd.recv(buffer)
-				connected_list.append(sockfd)
-				record[addr]=""
-				#print "record and conn list ",record,connected_list
-
-				#if repeated username
-				if name in record.values():
-					sockfd.send(b"Username already taken!")
-					del record[addr]
-					connected_list.remove(sockfd)
-					sockfd.close()
-					continue
-				else:
-					#add name and address
-					record[addr]=name
-					print("Client (%s, %s) connected" % addr," [",record[addr],"]")
-					sockfd.send(banner)
-					print(str(name) + "Joined")
-					# send_to_all(sockfd, "\33[32m\33[1m\r "+str(name)+" joined the conversation \n\33[0m")
-
-			#TODO: THIS IS WHERE DATA IS SENT
-			#Some incoming message from a client
-			elif sock == sys.stdin:
-				input = str(sys.stdin.readline())
-				in_len = len(input)
-				instr = ""
-				input = input[:in_len-1]
-				print(input)
-				x = input.split(" ")
-				print(x)
-				lenx = len(x)
-				if(x[0] == "list"):
-					print(record)
-				elif(x[0] == "exec"):
-					for i in x:
-						instr = instr + i + " "
-					print(instr)
-					send_to_all(instr, connected_list)
-					# print("exec")
-				# if(input == "list"):
-				# 	print(record)
-				# elif(input[:4] == "exec"):
-				# 	print(input[5:4])
-
-			else:
-				# Data from client
-				try:
-					data = sock.recv(buffer)
-					#print "sock is: ",sock
-					# data=data1[:data1.index("\n")]
-					#print "\ndata received: ",data
-
-					#get addr of client sending the message
-					i,p=sock.getpeername()
-					if data == b'tata\n':
-						msg="\r\33[1m"+"\33[31m "+str(record[(i,p)])+" left the conversation \33[0m\n"
+			if sock == s:
+				data = (sock.recv(4096)).decode('utf-8')
+				if not data :
+					print('DISCONNECTED!!')
+					sys.exit()
+				else :
+#					resp = data.split("$")
+#					if(resp[0].strip() == "exec"):
+#						recv = resp[1]
 						print(data)
-						# send_to_all(sock,str.encode(msg))
-						print("Client (%s, %s) is offline" % (i,p)," [",record[(i,p)],"]")
-						del record[(i,p)]
-						connected_list.remove(sock)
-						sock.close()
-						continue
 
-					else:
-						#decodes message and prints response from client
-						data2 = data.decode('utf-8', "backslashreplace")
-						print(data2)
-				#abrupt user exit
-				except:
-					(i,p)=sock.getpeername()
-					send_to_all(sock, "\r\33[31m \33[1m"+ str(record[(i,p)])+" left the conversation unexpectedly\33[0m\n")
-					print("Client (%s, %s) is offline (error)" % (i,p)," [",record[(i,p)],"]\n")
-					del record[(i,p)]
-					connected_list.remove(sock)
-					sock.close()
-					continue
+						#where client receives command
+#						res = run_command(recv)
+	
+						#send command
+#						s.send(res)
+
+		#user entered a message
+			else :
+				msg=sys.stdin.readline()
+				s.send(str(msg).encode('utf-8'))
+				# display()
+
+"""
+Runs command send from server with exec
+"""
+def run_command(cmd):
+	result = subprocess.check_output(cmd, shell=True)
+	return result
 
 
-	server_socket.close()
+if __name__ == "__main__":
+	main()
 

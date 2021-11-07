@@ -37,6 +37,7 @@ func handleConnection(conn net.Conn) {
 		return
 	}
 	print(string(command))
+	conn.Write([]byte("foobar"))
 }
 
 func main() {
