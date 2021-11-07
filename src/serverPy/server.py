@@ -8,11 +8,11 @@ def display() :
 	sys.stdout.flush()
 
 def main():
-	if len(sys.argv) < 3:
+	if len(sys.argv) < 2:
 		print("error")
 	else:
 		host = sys.argv[1]
-		name = str.encode(sys.argv[2])
+#		name = str.encode(sys.argv[2])
 
 	port = 7025
 	#asks for user name
@@ -28,7 +28,7 @@ def main():
 		sys.exit()
 
 #if connected
-	s.send(name)
+	#s.send(name)
 	display()
 	while 1:
 		socket_list = [sys.stdin, s]
@@ -44,16 +44,16 @@ def main():
 					print('DISCONNECTED!!')
 					sys.exit()
 				else :
-					resp = data.split("$")
-					if(resp[0].strip() == "exec"):
-						recv = resp[1]
-						print(recv)
+#					resp = data.split("$")
+#					if(resp[0].strip() == "exec"):
+#						recv = resp[1]
+						print(data)
 
 						#where client receives command
-						res = run_command(recv)
+#						res = run_command(recv)
 	
 						#send command
-						s.send(res)
+#						s.send(res)
 
 		#user entered a message
 			else :
