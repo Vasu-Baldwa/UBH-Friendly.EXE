@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -31,15 +30,15 @@ type Packet struct {
 }
 
 func getLocalIP() net.IP {
-    conn, err := net.Dial("udp", "8.8.8.8:80")
-    if err != nil {
-        fmt.Println(err)
-    }
-    defer conn.Close()
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer conn.Close()
 
-    localAddr := conn.LocalAddr().(*net.UDPAddr)
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
 
-    return localAddr.IP
+	return localAddr.IP
 }
 
 func getMacAddr() []string {
@@ -76,7 +75,6 @@ func getUsername() string {
 func arrToString(strArray []string) string {
 	return strings.Join(strArray, " ")
 }
-
 
 func writeData() string {
 	sendData := Packet{
@@ -120,7 +118,6 @@ func handleConnection(conn net.Conn) {
 	}
 	print(string(command))
 	conn.Write([]byte(writeData()))
-	conn.Write([]byte("foobar"))
 }
 
 func main() {
