@@ -5,7 +5,6 @@ import base64
 
 #Helper function (formatting)
 def display() :
-	you=" You: "
 	# sys.stdout.write()
 	sys.stdout.flush()
 
@@ -50,7 +49,7 @@ def main():
 #					if(resp[0].strip() == "exec"):
 #						recv = resp[1]
 						print(str(base64.b64decode(data).decode('utf-8')))
-
+						#print(data)
 						#where client receives command
 #						res = run_command(recv)
 	
