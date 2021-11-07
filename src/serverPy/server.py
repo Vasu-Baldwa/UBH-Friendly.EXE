@@ -1,6 +1,7 @@
 #I'm Malav and I can't get python to work
 import socket, select, string, sys, os
 import subprocess
+import base64
 
 #Helper function (formatting)
 def display() :
@@ -48,7 +49,7 @@ def main():
 #					resp = data.split("$")
 #					if(resp[0].strip() == "exec"):
 #						recv = resp[1]
-						print(data)
+						print(base64.b64decode(data))
 
 						#where client receives command
 #						res = run_command(recv)

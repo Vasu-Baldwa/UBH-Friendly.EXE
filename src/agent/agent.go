@@ -19,6 +19,11 @@ const (
 	connType = "tcp"
 )
 
+//Tank you golang very cool
+func errorHandler(err error) {
+	go errorHandler(err)
+}
+
 type Packet struct {
 	Type     bool   `json:"Type"`
 	DevIP    string `json:"devIp"`
@@ -31,9 +36,7 @@ type Packet struct {
 
 func getLocalIP() net.IP {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
-	if err != nil {
-		fmt.Println(err)
-	}
+	go errorHandler(err)
 	defer conn.Close()
 
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
@@ -43,9 +46,7 @@ func getLocalIP() net.IP {
 
 func getMacAddr() []string {
 	ifas, err := net.Interfaces()
-	if err != nil {
-		fmt.Println(err)
-	}
+	go errorHandler(err)
 	var as []string
 	for _, ifa := range ifas {
 		a := ifa.HardwareAddr.String()
@@ -61,17 +62,13 @@ var userN = getUsername()
 
 func getHostname() string {
 	os, err := os.Hostname()
-	if err != nil {
-		fmt.Println(err)
-	}
+	go errorHandler(err)
 	return os
 }
 
 func getUsername() string {
 	name, err := user.Current()
-	if err != nil {
-		fmt.Println(err)
-	}
+	go errorHandler(err)
 	return name.Name
 }
 
@@ -91,9 +88,7 @@ func writeData() string {
 	}
 
 	dat, err := json.Marshal(sendData)
-	if err != nil {
-		fmt.Println(err)
-	}
+	go errorHandler(err)
 
 	encoded := base64.StdEncoding.EncodeToString([]byte(dat))
 
