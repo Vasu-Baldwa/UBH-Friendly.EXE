@@ -37,12 +37,15 @@ def sql_insertBeacon(con, entity):
     con.commit()
 
 
-def sql_updateBeacon(con, entity, mac):
+def sql_getUID(con, mac):
     cursorObj = con.cursor()
-    cursorObj.execute(
-        "UPDATE beacons SET Hostname = \'"  + entity[0] + "\', ip = \'" + entity[1] + "\', lastseen = \'" + entity[2] + "\'where MAC = \"" + str(mac) + "\"", entity)
-    con.commit()
+    cursorObj.execute("SELECT uid FROM beacons WHERE MAC = \"" + str(mac) + "\"")
+    result = cursorObj.fetchone()
+    return result[0]
 
+def sql_delete(con, mac):
+    cursorObj = con.cursor()
+    cursorObj.execute("DELETE FROM beacons WHERE MAC = \"" + str(mac) + "\"")
 
 def noBeacon(con, mac):
     # return true if no beacon exists
@@ -87,9 +90,10 @@ def beaconHandler():
                         UID = UID+1
                     else:
                         print("b")
-                        entities = (jsonStr["Hostname"],
-                                    jsonStr["devIp"], jsonStr["time"])
-                        sql_updateBeacon(con, entities, jsonStr["Mac"])
+                        entities = (sql_getUID(con, jsonStr["Mac"]), jsonStr["Mac"], jsonStr["Hostname"],
+                                    jsonStr["username"], jsonStr["devIp"], jsonStr["time"])
+                        sql_delete(con, jsonStr["Mac"])
+                        sql_insertBeacon(con, entities)
                 else:
                     print("SQL ERROR")
                 conn.close()
