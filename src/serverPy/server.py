@@ -49,7 +49,7 @@ def main():
 #					resp = data.split("$")
 #					if(resp[0].strip() == "exec"):
 #						recv = resp[1]
-						print(base64.b64decode(data))
+						print(str(base64.b64decode(data).decode('utf-8')))
 
 						#where client receives command
 #						res = run_command(recv)
